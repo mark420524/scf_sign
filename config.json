@@ -1,46 +1,80 @@
 {
-    "SKey": "",
-    "IQIYI": [
+    "push":{
+        "type":"dingding",
+        "dingding":{
+            "access_token":"",
+            "sign_secret":"SECxxxxxxxxxxxxx"
+        },
+        "coolplus":{
+            "skey":""
+        }
+    },
+    "IQIYI": {
+        "enable":1,
+        "users":
+        [
         {
             "P00001": ""
         }
-    ],
-    "TX": [
+        ]
+    },
+    "TX": {
+        "enable":0,
+        "users":[
         {
             "params": "",
             "cookies": "vqq_access_token=; vqq_openid=; vqq_refresh_token=; main_login=qq; vqq_vuserid=; vqq_vusession="
         }
-    ],
-    "MGO": [
+        ]
+    },
+    "MGO": {
+        "enable":0,
+        "users":[
         {
             "params": ""
         }
-    ],
-    "WYY": [
+        ]
+    },
+    "WYY": {
+        "enable":0,
+        "users":[
         {
             "uin": "",
             "pwd": ""
         }
-    ],
-    "ECLOUD": [
+        ]
+    },
+    "ECLOUD": {
+        "enable":0,
+        "users":[
         {
             "user": "",
             "pwd": ""
         }
-    ],
-    "52PJ": [
+        ]
+    },
+    "52PJ": {
+        "enable":0,
+        "users":[
         {
             "cookies": "htVD_2132_saltkey=; htVD_2132_auth="
         }
-    ],
-    "LEY": [
+        ]
+    },
+    "LEY": {
+        "enable":0,
+        "users":[
         {
             "cookies": "2vlT_96d0_saltkey=; 2vlT_96d0_auth="
         }
-    ],
-    "BBS": [
+        ]
+    },
+    "BBS": {
+        "enable":0,
+        "users":[
         {
             "cookies": "lDlk_ecc9_saltkey=; lDlk_ecc9_auth="
         }
-    ]
+        ]
+    }
 }
