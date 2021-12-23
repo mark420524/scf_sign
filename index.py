@@ -11,24 +11,28 @@ from func.ecloud import ECloud_sign
 from func.wapj import PJ_sign
 from func.ley import LY_sign
 from func.bbs import JY_sign
+from push.dingtalk import push_msg
 
-
-def sendMsg(key, content):
-    '''
-    通过Cool Push向QQ发送信息
-    :param key: 酷腿密钥
-    :param c: 发送内容
-    '''
-    url = f"https://push.xuthus.cc/send/{key}"
-    params = {
-        "c": content
-    }
-    requests.get(url, params=params)
+def sendMsg(push_info, content):
+    push_type = push_info['type']
+    print(push_type)
+    key_info = push_info[push_type]
+    print(key_info)
+    if push_type == "dingding":
+        push_msg(key_info['access_token'], key_info['sign_secret'], content)
+    elif push_type == "coolplus" :
+        url = f"https://push.xuthus.cc/send/{key}"
+        params = {
+            "c": content
+        }
+        requests.get(url, params=params)
 
 
 def iqy(P00001):
     '''爱奇艺引用'''
     # 签到
+    if P00001:
+        return 'enable'
     obj = IQY_sign(P00001)
     msg1 = obj.sign()
     # 抽奖
@@ -104,52 +108,84 @@ def main_handler(event, context):
     with open("config.json", "r", encoding="utf-8") as f:
         data = json.loads(f.read())
 
-    key = data["SKey"]
+    push_info = data["push"]
     # 爱奇艺
     msg_iqy = ""
-    for d in data["IQIYI"]:
-        msg_iqy += iqy(d["P00001"])
+    data_iqy = data["IQIYI"]
+    if data_iqy["enable"]:
+        for d in data_iqy["users"]:
+            msg_iqy += iqy(d["P00001"])
+    else:
+        msg_iqy = "未开启"
 
     # 腾讯视频
     msg_tx = ""
-    for d in data["TX"]:
-        params = dict([p.split("=") for p in d["params"].split("&")])
-        cookies = dict([c.split("=") for c in d["cookies"].split("; ")])
-        msg_tx += tx(cookies, params)
+    tx = data["TX"]
+    if tx["enable"]:
+        for d in tx["users"]:
+            params = dict([p.split("=") for p in d["params"].split("&")])
+            cookies = dict([c.split("=") for c in d["cookies"].split("; ")])
+            msg_tx += tx(cookies, params)
+    else:
+        msg_tx = "未开启"
 
     # 芒果tv
     msg_mg = ""
-    for d in data["MGO"]:
-        params = dict([p.split("=") for p in d["params"].split("&")])
-        msg_mg += mg(params)
+    mg = data["MGO"]
+    if mg["enable"]:
+        for d in mg["users"]:
+            params = dict([p.split("=") for p in d["params"].split("&")])
+            msg_mg += mg(params)
+    else:
+        msg_mg = "未开启"
 
     # 天翼云盘
     msg_ec = ""
-    for d in data["ECLOUD"]:
-        msg_ec += ecloud(d["user"], d["pwd"])
+    ec = data["ECLOUD"]
+    if ec["enable"]:
+        for d in ec["users"]:
+            msg_ec += ecloud(d["user"], d["pwd"])
+    else:
+        msg_ec = "未开启"
 
     # 吾爱论坛
     msg_52 = ""
-    for d in data["52PJ"]:
-        cookies = dict([c.split("=") for c in d["cookies"].split("; ")])
-        msg_52 += pj(cookies)
+    data_52 = data["52PJ"]
+    if data_52["enable"]:
+        for d in data_52["users"]:
+            cookies = dict([c.split("=") for c in d["cookies"].split("; ")])
+            msg_52 += pj(cookies)
+    else:
+        msg_52 = "未开启"
 
     # 乐易论坛
     msg_ly = ""
-    for d in data["LEY"]:
-        cookies = dict([c.split("=") for c in d["cookies"].split("; ")])
-        msg_ly += ly(cookies)
+    ley = data["LEY"]
+    if ley["enable"]:
+        for d in ley["users"]:
+            cookies = dict([c.split("=") for c in d["cookies"].split("; ")])
+            msg_ly += ly(cookies)
+    else:
+        msg_ly = "未开启"
 
     # 精易论坛
     msg_jy = ""
-    for d in data["BBS"]:
-        cookies = dict([c.split("=") for c in d["cookies"].split("; ")])
-        msg_jy += jy(cookies)
+    bbs = data["BBS"]
+    if bbs["enable"]:
+        for d in bbs["users"]:
+            cookies = dict([c.split("=") for c in d["cookies"].split("; ")])
+            msg_jy += jy(cookies)
+    else:
+        msg_jy = "未开启"
 
     # 网易云音乐
     msg_wyy = ""
-    for d in data["WYY"]:
-        msg_wyy += wyy(d["uin"], d["pwd"])
+    wyy = data["WYY"]
+    if wyy["enable"]:
+        for d in wyy["users"]:
+            msg_wyy += wyy(d["uin"], d["pwd"])
+    else:
+        msg_wyy = "未开启"
 
     # 发送信息
     msg = f"【爱奇艺】\n{msg_iqy}\n\
@@ -160,5 +196,9 @@ def main_handler(event, context):
 【乐易论坛】\n{msg_ly}\n\
 【精易论坛】\n{msg_jy}\n\
 【网易云】\n{msg_wyy}"
-    sendMsg(key, msg)
+    sendMsg(push_info, msg)
     return msg
+
+if __name__=="__main__":
+    main_handler('','') 
+    
