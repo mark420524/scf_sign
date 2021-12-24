@@ -31,8 +31,6 @@ def sendMsg(push_info, content):
 def iqy(P00001):
     '''爱奇艺引用'''
     # 签到
-    if P00001:
-        return 'enable'
     obj = IQY_sign(P00001)
     msg1 = obj.sign()
     # 抽奖
