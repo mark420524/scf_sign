@@ -196,7 +196,3 @@ def main_handler(event, context):
 【网易云】\n{msg_wyy}"
     sendMsg(push_info, msg)
     return msg
-
-if __name__=="__main__":
-    main_handler('','') 
-    
